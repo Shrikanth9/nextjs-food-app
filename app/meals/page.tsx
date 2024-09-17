@@ -12,7 +12,7 @@ async function Meals() {
    )
 }
 
-export default async function MealsPage() {
+export default function MealsPage() {
    
     return (
        <>

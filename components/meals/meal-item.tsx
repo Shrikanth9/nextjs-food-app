@@ -7,7 +7,7 @@ export default function MealItem({ title, slug, image, summary, creator }: any) 
         <article className={styles.meal}>
             <header>
                 <div className={styles.image}>
-                  <Image src={image} alt={title} fill sizes="100vw 100vh"/>
+                  <Image src={image} alt={title} fill sizes="100vw 100vh" priority/>
                 </div>
                 <div className={styles.headerText}>
                     <h2>{title}</h2>
