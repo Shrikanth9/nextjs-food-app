@@ -18,10 +18,8 @@ function getSupabaseImageUrl(imageName: string) {
     return imageName;
   }
   
-  // Remove any leading/trailing slashes and 'images/' prefix if present
-  const cleanName = imageName
-    .replace(/^\/+|\/+$/g, '')
-    .replace(/^images\//, '');
+  // Remove any leading/trailing slashes
+  const cleanName = imageName.replace(/^\/+|\/+$/g, '');
   
   // Construct the full URL
   const imageUrl = `${SUPABASE_STORAGE_URL}/${cleanName}`;
