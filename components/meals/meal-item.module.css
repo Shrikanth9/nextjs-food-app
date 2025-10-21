@@ -41,6 +41,10 @@
     object-fit: cover;
   }
   
+  .hidden {
+    display: none;
+  }
+  
   .content {
     display: flex;
     flex-direction: column;
