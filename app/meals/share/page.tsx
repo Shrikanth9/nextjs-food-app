@@ -4,11 +4,21 @@ import ImagePicker from '@/components/meals/image-picker';
 import MealSubmit from '@/components/meals/meal-submit';
 import { ShareMeal } from '@/lib/action';
 import { useFormState } from 'react-dom';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import classes from './page.module.css';
 
 export default function ShareMealPage() {
-  
-  const [ formState, formAction ] = useFormState(ShareMeal, null);
+  const router = useRouter();
+  const [formState, formAction] = useFormState(ShareMeal, { success: false, message: '' });
+
+  // Handle successful form submission
+  useEffect(() => {
+    if (formState?.success) {
+      router.push('/meals');
+    }
+  }, [formState, router]);
+
   return (
     <>
       <header className={classes.header}>
@@ -46,11 +56,16 @@ export default function ShareMealPage() {
               required
             ></textarea>
           </p>
-          { formState && <p className={classes.error}>{formState}</p> }
-          <ImagePicker label="Image" name="image"/>
+          
+          {/* Display error message if any */}
+          {formState?.message && !formState.success && (
+            <p className={classes.error}>{formState.message}</p>
+          )}
+          
+          <ImagePicker label="Image" name="image" required />
+          
           <div className={classes.actions}>
             <MealSubmit />
-            { formState && <p className={classes.error}> { formState } </p>}
           </div>
         </form>
       </main>
