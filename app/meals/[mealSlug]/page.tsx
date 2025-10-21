@@ -3,18 +3,24 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import styles from './page.module.css';
 
-export default function MealDetailsPage({ params }:  any) {
-    const meal = getMeal(params.mealSlug);
+export default async function MealDetailsPage({ params }: { params: { mealSlug: string } }) {
+    const meal = await getMeal(params.mealSlug);
 
-    if(!meal) {
+    if (!meal) {
         notFound();
     }
-    meal.instructions = meal.instructions.replace(/\n/g, '<br/>');
+    
+    // Create a new object with the processed instructions
+    const mealWithHTML = {
+        ...meal,
+        instructions: meal.instructions.replace(/\n/g, '<br/>')
+    };
+
     return (
         <>
         <header className={styles.header}>
             <div className={styles.image}> 
-                <Image src={meal.image} alt={meal.title} fill sizes='100vw 100vh'/>
+                <Image src={mealWithHTML.image} alt={mealWithHTML.title} fill sizes='100vw 100vh'/>
             </div>
             <div className={styles.headerText}>
                 <h1>{meal.title}</h1>
