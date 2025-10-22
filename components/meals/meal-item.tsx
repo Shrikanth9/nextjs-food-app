@@ -5,27 +5,19 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "./meal-item.module.css";
 
-const SUPABASE_STORAGE_URL = 'https://tqpmfridizpcasxblnni.supabase.co/storage/v1/object/public/meals/images';
+const SUPABASE_STORAGE_URL = 'https://tqpmfridizpcasxblnni.supabase.co/storage/v1/object/public/meals/';
 
 function getSupabaseImageUrl(imageName: string) {
-  if (!imageName) {
-    console.error('No image name provided');
-    return '';
-  }
+  if (!imageName) return '';
 
-  // If it's already a full URL, return as is
   if (imageName.startsWith('http')) {
     return imageName;
   }
-  
-  // Remove any leading/trailing slashes
+
   const cleanName = imageName.replace(/^\/+|\/+$/g, '');
+  const path = cleanName.startsWith('images/') ? cleanName : `images/${cleanName}`;
   
-  // Construct the full URL
-  const imageUrl = `${SUPABASE_STORAGE_URL}/${cleanName}`;
-  console.log('Image URL:', imageUrl);
-  
-  return imageUrl;
+  return `${SUPABASE_STORAGE_URL}${path}`;
 }
 
 export default function MealItem({ title, slug, image, summary, creator }: any) {
@@ -38,38 +30,31 @@ export default function MealItem({ title, slug, image, summary, creator }: any) 
     setIsLoading(true);
     
     if (!image) {
-      console.log('No image provided, using fallback');
       setImageError(true);
       setIsLoading(false);
       return;
     }
     
     const url = getSupabaseImageUrl(image);
-    console.log('Image processing:', { original: image, processed: url });
     
     if (!url) {
-      console.error('Failed to generate image URL');
       setImageError(true);
       setIsLoading(false);
       return;
     }
     
-    // For local development, use a simpler approach
     if (process.env.NODE_ENV === 'development') {
       setImgSrc(url);
       setIsLoading(false);
       return;
     }
     
-    // For production, verify the image exists
     const img = new window.Image();
     img.onload = () => {
-      console.log('Image loaded successfully:', url);
       setImgSrc(url);
       setIsLoading(false);
     };
     img.onerror = () => {
-      console.error('Failed to load image, using fallback:', url);
       setImageError(true);
       setIsLoading(false);
     };
@@ -109,10 +94,7 @@ export default function MealItem({ title, slug, image, summary, creator }: any) 
                 className={`${styles.mealImage} ${isLoading ? styles.hidden : ''}`}
                 priority={false}
                 onLoad={() => setIsLoading(false)}
-                onError={(e) => {
-                  console.error('Failed to load image:', imgSrc, e);
-                  setImageError(true);
-                }}
+                onError={() => setImageError(true)}
               />
             </>
           ) : (
